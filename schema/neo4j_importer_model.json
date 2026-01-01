@@ -1,0 +1,1632 @@
+{
+  "version": "3.0.0",
+  "visualisation": {
+    "nodes": [
+      {
+        "id": "n:3",
+        "position": {
+          "x": -254.37251651427619,
+          "y": -177.0080724505023
+        }
+      },
+      {
+        "id": "n:4",
+        "position": {
+          "x": -42.32449711484212,
+          "y": -420.43178371836336
+        }
+      },
+      {
+        "id": "n:1",
+        "position": {
+          "x": 286.1945999752664,
+          "y": -228.94641754192065
+        }
+      },
+      {
+        "id": "n:2",
+        "position": {
+          "x": 57.300473113338,
+          "y": 45.582949733488945
+        }
+      }
+    ]
+  },
+  "dataModel": {
+    "version": "3.0.0",
+    "graphSchemaRepresentation": {
+      "graphSchema": {
+        "constraints": [
+          {
+            "$id": "c:2",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "name": "node_id_法人_uniq",
+            "nodeLabel": {
+              "$ref": "#nl:4"
+            },
+            "properties": [
+              {
+                "$ref": "#p:4_0"
+              }
+            ]
+          },
+          {
+            "$id": "c:1",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "name": "node_id_役員/株主_uniq",
+            "nodeLabel": {
+              "$ref": "#nl:3"
+            },
+            "properties": [
+              {
+                "$ref": "#p:3_0"
+              }
+            ]
+          },
+          {
+            "$id": "c:3",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "name": "node_id_仲介者_uniq",
+            "nodeLabel": {
+              "$ref": "#nl:1"
+            },
+            "properties": [
+              {
+                "$ref": "#p:1"
+              }
+            ]
+          },
+          {
+            "$id": "c:4",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "name": "node_id_住所_uniq",
+            "nodeLabel": {
+              "$ref": "#nl:2"
+            },
+            "properties": [
+              {
+                "$ref": "#p:17"
+              }
+            ]
+          }
+        ],
+        "indexes": [],
+        "nodeLabels": [
+          {
+            "$id": "nl:3",
+            "properties": [
+              {
+                "$id": "p:3_0",
+                "nullable": false,
+                "token": "node_id",
+                "type": {
+                  "type": "integer"
+                }
+              },
+              {
+                "$id": "p:3_1",
+                "nullable": false,
+                "token": "name",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:3_2",
+                "nullable": false,
+                "token": "countries",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:3_3",
+                "nullable": false,
+                "token": "country_codes",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:3_4",
+                "nullable": false,
+                "token": "sourceID",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:3_5",
+                "nullable": false,
+                "token": "valid_until",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:3_6",
+                "nullable": false,
+                "token": "note",
+                "type": {
+                  "type": "string"
+                }
+              }
+            ],
+            "token": "役員/株主"
+          },
+          {
+            "$id": "nl:4",
+            "properties": [
+              {
+                "$id": "p:4_0",
+                "nullable": false,
+                "token": "node_id",
+                "type": {
+                  "type": "integer"
+                }
+              },
+              {
+                "$id": "p:4_1",
+                "nullable": false,
+                "token": "name",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_2",
+                "nullable": false,
+                "token": "original_name",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_3",
+                "nullable": false,
+                "token": "former_name",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_4",
+                "nullable": false,
+                "token": "jurisdiction",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_5",
+                "nullable": false,
+                "token": "jurisdiction_description",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_6",
+                "nullable": false,
+                "token": "company_type",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_7",
+                "nullable": false,
+                "token": "address",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_8",
+                "nullable": false,
+                "token": "internal_id",
+                "type": {
+                  "type": "integer"
+                }
+              },
+              {
+                "$id": "p:4_9",
+                "nullable": false,
+                "token": "incorporation_date",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_10",
+                "nullable": false,
+                "token": "inactivation_date",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_11",
+                "nullable": false,
+                "token": "struck_off_date",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_12",
+                "nullable": false,
+                "token": "dorm_date",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_13",
+                "nullable": false,
+                "token": "status",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_14",
+                "nullable": false,
+                "token": "service_provider",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_15",
+                "nullable": false,
+                "token": "ibcRUC",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_16",
+                "nullable": false,
+                "token": "country_codes",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_17",
+                "nullable": false,
+                "token": "countries",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_18",
+                "nullable": false,
+                "token": "sourceID",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_19",
+                "nullable": false,
+                "token": "valid_until",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4_20",
+                "nullable": false,
+                "token": "note",
+                "type": {
+                  "type": "string"
+                }
+              }
+            ],
+            "token": "法人"
+          },
+          {
+            "$id": "nl:1",
+            "properties": [
+              {
+                "$id": "p:1",
+                "nullable": true,
+                "token": "node_id",
+                "type": {
+                  "type": "integer"
+                }
+              },
+              {
+                "$id": "p:2",
+                "nullable": true,
+                "token": "name",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:9",
+                "nullable": true,
+                "token": "status",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:10",
+                "nullable": true,
+                "token": "internal_id",
+                "type": {
+                  "type": "integer"
+                }
+              },
+              {
+                "$id": "p:11",
+                "nullable": true,
+                "token": "address",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:12",
+                "nullable": true,
+                "token": "countries",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:13",
+                "nullable": true,
+                "token": "country_codes",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:14",
+                "nullable": true,
+                "token": "sourceID",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:15",
+                "nullable": true,
+                "token": "valid_until",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:16",
+                "nullable": true,
+                "token": "note",
+                "type": {
+                  "type": "string"
+                }
+              }
+            ],
+            "token": "仲介者"
+          },
+          {
+            "$id": "nl:2",
+            "properties": [
+              {
+                "$id": "p:17",
+                "nullable": true,
+                "token": "node_id",
+                "type": {
+                  "type": "integer"
+                }
+              },
+              {
+                "$id": "p:18",
+                "nullable": true,
+                "token": "address",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:19",
+                "nullable": true,
+                "token": "name",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:20",
+                "nullable": true,
+                "token": "countries",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:21",
+                "nullable": true,
+                "token": "country_codes",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:22",
+                "nullable": true,
+                "token": "sourceID",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:23",
+                "nullable": true,
+                "token": "valid_until",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:24",
+                "nullable": true,
+                "token": "note",
+                "type": {
+                  "type": "string"
+                }
+              }
+            ],
+            "token": "住所"
+          }
+        ],
+        "nodeObjectTypes": [
+          {
+            "$id": "n:3",
+            "labels": [
+              {
+                "$ref": "#nl:3"
+              }
+            ]
+          },
+          {
+            "$id": "n:4",
+            "labels": [
+              {
+                "$ref": "#nl:4"
+              }
+            ]
+          },
+          {
+            "$id": "n:1",
+            "labels": [
+              {
+                "$ref": "#nl:1"
+              }
+            ]
+          },
+          {
+            "$id": "n:2",
+            "labels": [
+              {
+                "$ref": "#nl:2"
+              }
+            ]
+          }
+        ],
+        "relationshipObjectTypes": [
+          {
+            "$id": "r:1",
+            "from": {
+              "$ref": "#n:3"
+            },
+            "to": {
+              "$ref": "#n:4"
+            },
+            "type": {
+              "$ref": "#rt:1"
+            }
+          },
+          {
+            "$id": "r:2",
+            "from": {
+              "$ref": "#n:1"
+            },
+            "to": {
+              "$ref": "#n:4"
+            },
+            "type": {
+              "$ref": "#rt:2"
+            }
+          },
+          {
+            "$id": "r:3",
+            "from": {
+              "$ref": "#n:4"
+            },
+            "to": {
+              "$ref": "#n:2"
+            },
+            "type": {
+              "$ref": "#rt:3"
+            }
+          },
+          {
+            "$id": "r:4",
+            "from": {
+              "$ref": "#n:1"
+            },
+            "to": {
+              "$ref": "#n:2"
+            },
+            "type": {
+              "$ref": "#rt:4"
+            }
+          },
+          {
+            "$id": "r:5",
+            "from": {
+              "$ref": "#n:3"
+            },
+            "to": {
+              "$ref": "#n:2"
+            },
+            "type": {
+              "$ref": "#rt:5"
+            }
+          },
+          {
+            "$id": "r:6",
+            "from": {
+              "$ref": "#n:3"
+            },
+            "to": {
+              "$ref": "#n:3"
+            },
+            "type": {
+              "$ref": "#rt:6"
+            }
+          },
+          {
+            "$id": "r:7",
+            "from": {
+              "$ref": "#n:3"
+            },
+            "to": {
+              "$ref": "#n:3"
+            },
+            "type": {
+              "$ref": "#rt:7"
+            }
+          }
+        ],
+        "relationshipTypes": [
+          {
+            "$id": "rt:1",
+            "properties": [
+              {
+                "$id": "p:3",
+                "nullable": true,
+                "token": "rel_type",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:4",
+                "nullable": true,
+                "token": "link",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:5",
+                "nullable": true,
+                "token": "status",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:6",
+                "nullable": true,
+                "token": "start_date",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:7",
+                "nullable": true,
+                "token": "end_date",
+                "type": {
+                  "type": "string"
+                }
+              },
+              {
+                "$id": "p:8",
+                "nullable": true,
+                "token": "sourceID",
+                "type": {
+                  "type": "string"
+                }
+              }
+            ],
+            "token": "役員"
+          },
+          {
+            "$id": "rt:2",
+            "properties": [],
+            "token": "仲介"
+          },
+          {
+            "$id": "rt:3",
+            "properties": [],
+            "token": "所在地"
+          },
+          {
+            "$id": "rt:4",
+            "properties": [],
+            "token": "登録住所"
+          },
+          {
+            "$id": "rt:5",
+            "properties": [],
+            "token": "所在地"
+          },
+          {
+            "$id": "rt:6",
+            "properties": [],
+            "token": "同名人物"
+          },
+          {
+            "$id": "rt:7",
+            "properties": [],
+            "token": "同一人物?"
+          }
+        ]
+      },
+      "version": "1.0.0"
+    },
+    "graphSchemaExtensionsRepresentation": {
+      "nodeKeyProperties": [
+        {
+          "keyProperties": [
+            {
+              "$ref": "#p:4_0"
+            }
+          ],
+          "node": {
+            "$ref": "#n:4"
+          }
+        },
+        {
+          "keyProperties": [
+            {
+              "$ref": "#p:3_0"
+            }
+          ],
+          "node": {
+            "$ref": "#n:3"
+          }
+        },
+        {
+          "keyProperties": [
+            {
+              "$ref": "#p:1"
+            }
+          ],
+          "node": {
+            "$ref": "#n:1"
+          }
+        },
+        {
+          "keyProperties": [
+            {
+              "$ref": "#p:17"
+            }
+          ],
+          "node": {
+            "$ref": "#n:2"
+          }
+        }
+      ]
+    },
+    "graphMappingRepresentation": {
+      "dataSourceSchema": {
+        "tableSchemas": [
+          {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "node_id",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "11000888"
+              },
+              {
+                "name": "name",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "BUSINESS CONSULTANTS LIMITED"
+              },
+              {
+                "name": "status",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "ACTIVE"
+              },
+              {
+                "name": "internal_id",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "11592"
+              },
+              {
+                "name": "address",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "BUSINESS CONSULTANTS LIMITED 18A; 18/F; TWO CHINACHEM PLAZA 68 CONNAUGHT ROAD CENTRAL HONG KONG HONG..."
+              },
+              {
+                "name": "countries",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Hong Kong"
+              },
+              {
+                "name": "country_codes",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "HKG"
+              },
+              {
+                "name": "sourceID",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Panama Papers"
+              },
+              {
+                "name": "valid_until",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "The Panama Papers  data is current through 2015"
+              },
+              {
+                "name": "note",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              }
+            ],
+            "name": "nodes-intermediaries.csv"
+          },
+          {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "node_id_start",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "11000888"
+              },
+              {
+                "name": "node_id_end",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "10025455"
+              },
+              {
+                "name": "rel_type",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "intermediary_of"
+              },
+              {
+                "name": "link",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "intermediary of"
+              },
+              {
+                "name": "status",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "start_date",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "end_date",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "sourceID",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Panama Papers"
+              }
+            ],
+            "name": "relationships.csv"
+          },
+          {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "node_id",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "14001172"
+              },
+              {
+                "name": "address",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "10FF; YIBAI SHANSHAN BLDG NO. 985 DONGFANG ROAD PUDONG; SHANGHAI; 200122; PRC"
+              },
+              {
+                "name": "name",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "countries",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "China"
+              },
+              {
+                "name": "country_codes",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "CHN"
+              },
+              {
+                "name": "sourceID",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Panama Papers"
+              },
+              {
+                "name": "valid_until",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "The Panama Papers  data is current through 2015"
+              },
+              {
+                "name": "note",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              }
+            ],
+            "name": "nodes-addresses.csv"
+          },
+          {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "node_id",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "12025473"
+              },
+              {
+                "name": "name",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "KUMIO DEWA"
+              },
+              {
+                "name": "countries",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Japan"
+              },
+              {
+                "name": "country_codes",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "JPN"
+              },
+              {
+                "name": "sourceID",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Panama Papers"
+              },
+              {
+                "name": "valid_until",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "The Panama Papers data is current through 2015"
+              },
+              {
+                "name": "note",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              }
+            ],
+            "name": "nodes-officers.csv"
+          },
+          {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "node_id",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "10007264"
+              },
+              {
+                "name": "name",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "RIZA DEVELOPMENT INC."
+              },
+              {
+                "name": "original_name",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "RIZA DEVELOPMENT INC."
+              },
+              {
+                "name": "former_name",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "jurisdiction",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "PMA"
+              },
+              {
+                "name": "jurisdiction_description",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Panama"
+              },
+              {
+                "name": "company_type",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "address",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "RIZA DEVELOPMENT INC. C/RAIMUNDO FERNANDEZ VILLAVERDE 19-2º IZQ. 28003 MADRID ESPAÑA *S.I.*"
+              },
+              {
+                "name": "internal_id",
+                "recommendedType": {
+                  "type": "integer"
+                },
+                "sample": "11889"
+              },
+              {
+                "name": "incorporation_date",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "16-NOV-1989"
+              },
+              {
+                "name": "inactivation_date",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "struck_off_date",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "dorm_date",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              },
+              {
+                "name": "status",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Active"
+              },
+              {
+                "name": "service_provider",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Mossack Fonseca"
+              },
+              {
+                "name": "ibcRUC",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "87"
+              },
+              {
+                "name": "country_codes",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "ESP"
+              },
+              {
+                "name": "countries",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Spain"
+              },
+              {
+                "name": "sourceID",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "Panama Papers"
+              },
+              {
+                "name": "valid_until",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": "The Panama Papers data is current through 2015"
+              },
+              {
+                "name": "note",
+                "recommendedType": {
+                  "type": "string"
+                },
+                "sample": ""
+              }
+            ],
+            "name": "nodes-entities.csv"
+          }
+        ],
+        "type": "local"
+      },
+      "nodeMappings": [
+        {
+          "node": {
+            "$ref": "#n:3"
+          },
+          "propertyMappings": [
+            {
+              "fieldName": "node_id",
+              "property": {
+                "$ref": "#p:3_0"
+              }
+            },
+            {
+              "fieldName": "name",
+              "property": {
+                "$ref": "#p:3_1"
+              }
+            },
+            {
+              "fieldName": "countries",
+              "property": {
+                "$ref": "#p:3_2"
+              }
+            },
+            {
+              "fieldName": "country_codes",
+              "property": {
+                "$ref": "#p:3_3"
+              }
+            },
+            {
+              "fieldName": "sourceID",
+              "property": {
+                "$ref": "#p:3_4"
+              }
+            },
+            {
+              "fieldName": "valid_until",
+              "property": {
+                "$ref": "#p:3_5"
+              }
+            },
+            {
+              "fieldName": "note",
+              "property": {
+                "$ref": "#p:3_6"
+              }
+            }
+          ],
+          "tableName": "nodes-officers.csv"
+        },
+        {
+          "node": {
+            "$ref": "#n:4"
+          },
+          "propertyMappings": [
+            {
+              "fieldName": "node_id",
+              "property": {
+                "$ref": "#p:4_0"
+              }
+            },
+            {
+              "fieldName": "name",
+              "property": {
+                "$ref": "#p:4_1"
+              }
+            },
+            {
+              "fieldName": "original_name",
+              "property": {
+                "$ref": "#p:4_2"
+              }
+            },
+            {
+              "fieldName": "former_name",
+              "property": {
+                "$ref": "#p:4_3"
+              }
+            },
+            {
+              "fieldName": "jurisdiction",
+              "property": {
+                "$ref": "#p:4_4"
+              }
+            },
+            {
+              "fieldName": "jurisdiction_description",
+              "property": {
+                "$ref": "#p:4_5"
+              }
+            },
+            {
+              "fieldName": "company_type",
+              "property": {
+                "$ref": "#p:4_6"
+              }
+            },
+            {
+              "fieldName": "address",
+              "property": {
+                "$ref": "#p:4_7"
+              }
+            },
+            {
+              "fieldName": "internal_id",
+              "property": {
+                "$ref": "#p:4_8"
+              }
+            },
+            {
+              "fieldName": "incorporation_date",
+              "property": {
+                "$ref": "#p:4_9"
+              }
+            },
+            {
+              "fieldName": "inactivation_date",
+              "property": {
+                "$ref": "#p:4_10"
+              }
+            },
+            {
+              "fieldName": "struck_off_date",
+              "property": {
+                "$ref": "#p:4_11"
+              }
+            },
+            {
+              "fieldName": "dorm_date",
+              "property": {
+                "$ref": "#p:4_12"
+              }
+            },
+            {
+              "fieldName": "status",
+              "property": {
+                "$ref": "#p:4_13"
+              }
+            },
+            {
+              "fieldName": "service_provider",
+              "property": {
+                "$ref": "#p:4_14"
+              }
+            },
+            {
+              "fieldName": "ibcRUC",
+              "property": {
+                "$ref": "#p:4_15"
+              }
+            },
+            {
+              "fieldName": "country_codes",
+              "property": {
+                "$ref": "#p:4_16"
+              }
+            },
+            {
+              "fieldName": "countries",
+              "property": {
+                "$ref": "#p:4_17"
+              }
+            },
+            {
+              "fieldName": "sourceID",
+              "property": {
+                "$ref": "#p:4_18"
+              }
+            },
+            {
+              "fieldName": "valid_until",
+              "property": {
+                "$ref": "#p:4_19"
+              }
+            },
+            {
+              "fieldName": "note",
+              "property": {
+                "$ref": "#p:4_20"
+              }
+            }
+          ],
+          "tableName": "nodes-entities.csv"
+        },
+        {
+          "node": {
+            "$ref": "#n:1"
+          },
+          "propertyMappings": [
+            {
+              "fieldName": "node_id",
+              "property": {
+                "$ref": "#p:1"
+              }
+            },
+            {
+              "fieldName": "name",
+              "property": {
+                "$ref": "#p:2"
+              }
+            },
+            {
+              "fieldName": "status",
+              "property": {
+                "$ref": "#p:9"
+              }
+            },
+            {
+              "fieldName": "internal_id",
+              "property": {
+                "$ref": "#p:10"
+              }
+            },
+            {
+              "fieldName": "address",
+              "property": {
+                "$ref": "#p:11"
+              }
+            },
+            {
+              "fieldName": "countries",
+              "property": {
+                "$ref": "#p:12"
+              }
+            },
+            {
+              "fieldName": "country_codes",
+              "property": {
+                "$ref": "#p:13"
+              }
+            },
+            {
+              "fieldName": "sourceID",
+              "property": {
+                "$ref": "#p:14"
+              }
+            },
+            {
+              "fieldName": "valid_until",
+              "property": {
+                "$ref": "#p:15"
+              }
+            },
+            {
+              "fieldName": "note",
+              "property": {
+                "$ref": "#p:16"
+              }
+            }
+          ],
+          "tableName": "nodes-intermediaries.csv"
+        },
+        {
+          "node": {
+            "$ref": "#n:2"
+          },
+          "propertyMappings": [
+            {
+              "fieldName": "node_id",
+              "property": {
+                "$ref": "#p:17"
+              }
+            },
+            {
+              "fieldName": "address",
+              "property": {
+                "$ref": "#p:18"
+              }
+            },
+            {
+              "fieldName": "name",
+              "property": {
+                "$ref": "#p:19"
+              }
+            },
+            {
+              "fieldName": "countries",
+              "property": {
+                "$ref": "#p:20"
+              }
+            },
+            {
+              "fieldName": "country_codes",
+              "property": {
+                "$ref": "#p:21"
+              }
+            },
+            {
+              "fieldName": "sourceID",
+              "property": {
+                "$ref": "#p:22"
+              }
+            },
+            {
+              "fieldName": "valid_until",
+              "property": {
+                "$ref": "#p:23"
+              }
+            },
+            {
+              "fieldName": "note",
+              "property": {
+                "$ref": "#p:24"
+              }
+            }
+          ],
+          "tableName": "nodes-addresses.csv"
+        }
+      ],
+      "relationshipMappings": [
+        {
+          "fromMappings": {
+            "#p:3_0": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "officer_of",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [
+            {
+              "fieldName": "rel_type",
+              "property": {
+                "$ref": "#p:3"
+              }
+            },
+            {
+              "fieldName": "link",
+              "property": {
+                "$ref": "#p:4"
+              }
+            },
+            {
+              "fieldName": "status",
+              "property": {
+                "$ref": "#p:5"
+              }
+            },
+            {
+              "fieldName": "start_date",
+              "property": {
+                "$ref": "#p:6"
+              }
+            },
+            {
+              "fieldName": "end_date",
+              "property": {
+                "$ref": "#p:7"
+              }
+            },
+            {
+              "fieldName": "sourceID",
+              "property": {
+                "$ref": "#p:8"
+              }
+            }
+          ],
+          "relationship": {
+            "$ref": "#r:1"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:4_0": "node_id_end"
+          }
+        },
+        {
+          "fromMappings": {
+            "#p:1": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "intermediary_of",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [],
+          "relationship": {
+            "$ref": "#r:2"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:4_0": "node_id_end"
+          }
+        },
+        {
+          "fromMappings": {
+            "#p:4_0": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "registered_address",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [],
+          "relationship": {
+            "$ref": "#r:3"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:17": "node_id_end"
+          }
+        },
+        {
+          "fromMappings": {
+            "#p:1": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "registered_address",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [],
+          "relationship": {
+            "$ref": "#r:4"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:17": "node_id_end"
+          }
+        },
+        {
+          "fromMappings": {
+            "#p:3_0": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "registered_address",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [],
+          "relationship": {
+            "$ref": "#r:5"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:17": "node_id_end"
+          }
+        },
+        {
+          "fromMappings": {
+            "#p:3_0": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "same_name_as",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [],
+          "relationship": {
+            "$ref": "#r:6"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:3_0": "node_id_end"
+          }
+        },
+        {
+          "fromMappings": {
+            "#p:3_0": "node_id_start"
+          },
+          "mappingFilter": {
+            "exactMatch": "similar",
+            "fieldName": "rel_type"
+          },
+          "propertyMappings": [],
+          "relationship": {
+            "$ref": "#r:7"
+          },
+          "tableName": "relationships.csv",
+          "toMappings": {
+            "#p:3_0": "node_id_end"
+          }
+        }
+      ]
+    },
+    "configurations": {
+      "idsToIgnore": []
+    }
+  }
+}

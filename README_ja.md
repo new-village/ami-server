@@ -1,8 +1,8 @@
 # ITO Server
 
-A FastAPI-based REST API backend for network investigation, connecting to Neo4j Aura database. Designed for deployment on Google Cloud Run.
+ネットワーク調査のためのFastAPIベースのREST APIバックエンド。Neo4j Auraデータベースに接続し、Google Cloud Runでのデプロイを想定しています。
 
-## 🏗️ Architecture
+## 🏗️ アーキテクチャ
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -10,8 +10,8 @@ A FastAPI-based REST API backend for network investigation, connecting to Neo4j 
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │                      ITO Server                            │  │
 │  │  ┌─────────┐  ┌──────────┐  ┌──────────┐  ┌───────────┐  │  │
-│  │  │ Search  │  │ Network  │  │ Cypher   │  │  Health   │  │  │
-│  │  │   API   │  │   API    │  │   API    │  │   Check   │  │  │
+│  │  │ 検索    │  │ネットワ  │  │ Cypher   │  │ ヘルス    │  │  │
+│  │  │  API    │  │ーク API  │  │   API    │  │ チェック  │  │  │
 │  │  └────┬────┘  └────┬─────┘  └────┬─────┘  └───────────┘  │  │
 │  │       │            │             │                        │  │
 │  │       └────────────┼─────────────┘                        │  │
@@ -19,7 +19,7 @@ A FastAPI-based REST API backend for network investigation, connecting to Neo4j 
 │  │             ┌──────┴──────┐                               │  │
 │  │             │  Neo4j      │                               │  │
 │  │             │  Driver     │                               │  │
-│  │             │  (Async)    │                               │  │
+│  │             │  (非同期)   │                               │  │
 │  │             └──────┬──────┘                               │  │
 │  └────────────────────┼──────────────────────────────────────┘  │
 └───────────────────────┼─────────────────────────────────────────┘
@@ -27,51 +27,51 @@ A FastAPI-based REST API backend for network investigation, connecting to Neo4j 
                         ▼
               ┌─────────────────┐
               │   Neo4j Aura    │
-              │    Database     │
+              │  データベース   │
               └─────────────────┘
 ```
 
-## ✨ Features
+## ✨ 機能
 
-### Core APIs
+### コアAPI
 
-1. **Search Node API** (`/api/v1/search/`)
-   - Find nodes by `node_id`
-   - Search by name (partial match)
-   - Search by any property
-   - Filter by node label
+1. **検索ノードAPI** (`/api/v1/search/`)
+   - `node_id`でノードを検索
+   - 名前で検索（部分一致）
+   - 任意のプロパティで検索
+   - ノードラベルでフィルタリング
 
-2. **Network Traversal API** (`/api/v1/network/`)
-   - Traverse network from a starting node
-   - Configurable hop depth (1-5)
-   - Find shortest path between nodes
-   - Get immediate neighbors
-   - Limit total returned entities
+2. **ネットワーク探索API** (`/api/v1/network/`)
+   - 開始ノードからネットワークを探索
+   - ホップ数を設定可能（1-5）
+   - ノード間の最短経路を検索
+   - 直接の隣接ノードを取得
+   - 返却エンティティ数の制限
 
-3. **Async Cypher API** (`/api/v1/cypher/`)
-   - Execute arbitrary Cypher queries
-   - Get database schema
-   - Get database statistics
+3. **非同期Cypher API** (`/api/v1/cypher/`)
+   - 任意のCypherクエリを実行
+   - データベーススキーマを取得
+   - データベース統計を取得
 
-### Graph Schema
+### グラフスキーマ
 
-**Node Labels:**
-- `役員/株主` (Officer): Officers and shareholders
-- `法人` (Entity): Corporate entities
-- `仲介者` (Intermediary): Intermediaries
-- `住所` (Address): Addresses
+**ノードラベル:**
+- `役員/株主`: 役員および株主
+- `法人`: 法人エンティティ
+- `仲介者`: 仲介者
+- `住所`: 住所
 
-**Relationship Types:**
-- `役員`: Officer relationship
-- `仲介`: Intermediary relationship
-- `所在地`: Location relationship
-- `登録住所`: Registered address relationship
-- `同名人物`: Same name person
-- `同一人物?`: Possibly same person
+**リレーションシップタイプ:**
+- `役員`: 役員関係
+- `仲介`: 仲介関係
+- `所在地`: 所在地関係
+- `登録住所`: 登録住所関係
+- `同名人物`: 同名の人物
+- `同一人物?`: 同一人物の可能性
 
-### Response Format
+### レスポンス形式
 
-Subgraph results follow a structured JSON schema for easy integration with visualization libraries:
+サブグラフの結果は、可視化ライブラリと簡単に統合できる構造化されたJSONスキーマに従います：
 
 ```json
 {
@@ -81,7 +81,7 @@ Subgraph results follow a structured JSON schema for easy integration with visua
       "node_id": 12345,
       "label": "法人",
       "properties": {
-        "name": "Company Name",
+        "name": "会社名",
         "status": "Active"
       }
     }
@@ -98,75 +98,75 @@ Subgraph results follow a structured JSON schema for easy integration with visua
 }
 ```
 
-## 🚀 Quick Start
+## 🚀 クイックスタート
 
-### Prerequisites
+### 前提条件
 
-- Python 3.12+
-- Neo4j Aura database instance
+- Python 3.12以上
+- Neo4j Auraデータベースインスタンス
 
-### Local Development
+### ローカル開発
 
-1. **Clone the repository**
+1. **リポジトリをクローン**
    ```bash
    git clone https://github.com/new-village/ito-server.git
    cd ito-server
    ```
 
-2. **Create virtual environment**
+2. **仮想環境を作成**
    ```bash
    python -m venv .venv
    source .venv/bin/activate  # Linux/macOS
-   # or
+   # または
    .venv\Scripts\activate  # Windows
    ```
 
-3. **Install dependencies**
+3. **依存関係をインストール**
    ```bash
    pip install -r requirements-dev.txt
    ```
 
-4. **Configure environment variables**
+4. **環境変数を設定**
    
-   Create a `.env` file:
+   `.env`ファイルを作成:
    ```env
    NEO4J_URL=neo4j+s://your-instance.databases.neo4j.io
    NEO4J_USERNAME=neo4j
    NEO4J_PASSWORD=your-password
    ```
 
-5. **Run the server**
+5. **サーバーを起動**
    ```bash
    uvicorn app.main:app --reload --port 8080
    ```
 
-6. **Access the API**
+6. **APIにアクセス**
    - Swagger UI: http://localhost:8080/docs
    - ReDoc: http://localhost:8080/redoc
    - OpenAPI JSON: http://localhost:8080/openapi.json
 
-### Running Tests
+### テストの実行
 
 ```bash
-# Run all tests
+# すべてのテストを実行
 pytest
 
-# Run with coverage
+# カバレッジ付きで実行
 pytest --cov=app --cov-report=html
 
-# Run specific test file
+# 特定のテストファイルを実行
 pytest tests/test_search.py -v
 ```
 
 ## 🐳 Docker
 
-### Build Image
+### イメージをビルド
 
 ```bash
 docker build -t ito-server .
 ```
 
-### Run Container
+### コンテナを実行
 
 ```bash
 docker run -p 8080:8080 \
@@ -176,16 +176,16 @@ docker run -p 8080:8080 \
   ito-server
 ```
 
-## ☁️ Google Cloud Run Deployment
+## ☁️ Google Cloud Runデプロイ
 
-### Using gcloud CLI
+### gcloud CLIを使用
 
-1. **Build and push to Container Registry**
+1. **Container Registryにビルドしてプッシュ**
    ```bash
    gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/ito-server
    ```
 
-2. **Deploy to Cloud Run**
+2. **Cloud Runにデプロイ**
    ```bash
    gcloud run deploy ito-server \
      --image gcr.io/YOUR_PROJECT_ID/ito-server \
@@ -195,55 +195,55 @@ docker run -p 8080:8080 \
      --set-secrets=NEO4J_URL=neo4j-url:latest,NEO4J_USERNAME=neo4j-username:latest,NEO4J_PASSWORD=neo4j-password:latest
    ```
 
-### Environment Variables
+### 環境変数
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEO4J_URL` | Neo4j connection URL | Yes |
-| `NEO4J_USERNAME` | Neo4j username | Yes |
-| `NEO4J_PASSWORD` | Neo4j password | Yes |
-| `DEBUG` | Enable debug mode | No (default: false) |
-| `CORS_ORIGINS` | Allowed CORS origins | No (default: ["*"]) |
+| 変数 | 説明 | 必須 |
+|------|------|------|
+| `NEO4J_URL` | Neo4j接続URL | はい |
+| `NEO4J_USERNAME` | Neo4jユーザー名 | はい |
+| `NEO4J_PASSWORD` | Neo4jパスワード | はい |
+| `DEBUG` | デバッグモードを有効化 | いいえ（デフォルト: false） |
+| `CORS_ORIGINS` | 許可されたCORSオリジン | いいえ（デフォルト: ["*"]） |
 
-## 📖 API Documentation
+## 📖 APIドキュメント
 
-### Search API
+### 検索API
 
-#### Search by Node ID
+#### Node IDで検索
 ```http
 GET /api/v1/search/by-id/{node_id}?label={label}
 ```
 
-#### Search by Name
+#### 名前で検索
 ```http
 GET /api/v1/search/by-name?name={name}&label={label}&limit={limit}
 ```
 
-#### Search by Property
+#### プロパティで検索
 ```http
 GET /api/v1/search/by-property?property_name={name}&property_value={value}&exact_match={bool}&limit={limit}
 ```
 
-### Network API
+### ネットワークAPI
 
-#### Traverse Network
+#### ネットワーク探索
 ```http
 GET /api/v1/network/traverse/{node_id}?hops={hops}&limit={limit}
 ```
 
-#### Get Neighbors
+#### 隣接ノード取得
 ```http
 GET /api/v1/network/neighbors/{node_id}?relationship_type={type}&limit={limit}
 ```
 
-#### Find Shortest Path
+#### 最短経路検索
 ```http
 GET /api/v1/network/shortest-path?start_node_id={id1}&end_node_id={id2}&max_hops={hops}
 ```
 
 ### Cypher API
 
-#### Execute Query
+#### クエリ実行
 ```http
 POST /api/v1/cypher/execute
 Content-Type: application/json
@@ -254,56 +254,56 @@ Content-Type: application/json
 }
 ```
 
-#### Get Schema
+#### スキーマ取得
 ```http
 GET /api/v1/cypher/schema
 ```
 
-#### Get Statistics
+#### 統計取得
 ```http
 GET /api/v1/cypher/stats
 ```
 
-### Health Endpoints
+### ヘルスエンドポイント
 
 ```http
-GET /health    # Health check with database status
-GET /ready     # Readiness check
-GET /live      # Liveness check
+GET /health    # データベースステータス付きヘルスチェック
+GET /ready     # レディネスチェック
+GET /live      # ライブネスチェック
 ```
 
-## 🔧 Configuration
+## 🔧 設定
 
-Configuration is managed via `pydantic-settings`. All settings can be overridden via environment variables.
+設定は`pydantic-settings`で管理されます。すべての設定は環境変数で上書きできます。
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `APP_NAME` | "ITO Server" | Application name |
-| `APP_VERSION` | "1.0.0" | Application version |
-| `DEBUG` | false | Debug mode |
-| `DEFAULT_HOPS` | 1 | Default traversal hops |
-| `MAX_HOPS` | 5 | Maximum traversal hops |
-| `DEFAULT_LIMIT` | 100 | Default result limit |
-| `MAX_LIMIT` | 1000 | Maximum result limit |
+| 設定 | デフォルト | 説明 |
+|------|-----------|------|
+| `APP_NAME` | "ITO Server" | アプリケーション名 |
+| `APP_VERSION` | "1.0.0" | アプリケーションバージョン |
+| `DEBUG` | false | デバッグモード |
+| `DEFAULT_HOPS` | 1 | デフォルト探索ホップ数 |
+| `MAX_HOPS` | 5 | 最大探索ホップ数 |
+| `DEFAULT_LIMIT` | 100 | デフォルト結果制限 |
+| `MAX_LIMIT` | 1000 | 最大結果制限 |
 
-## 📁 Project Structure
+## 📁 プロジェクト構成
 
 ```
 ito-server/
 ├── app/
 │   ├── __init__.py
-│   ├── config.py          # Configuration with pydantic-settings
-│   ├── database.py        # Neo4j connection management
-│   ├── main.py            # FastAPI application
-│   ├── models.py          # Pydantic models
+│   ├── config.py          # pydantic-settingsによる設定
+│   ├── database.py        # Neo4j接続管理
+│   ├── main.py            # FastAPIアプリケーション
+│   ├── models.py          # Pydanticモデル
 │   └── routers/
 │       ├── __init__.py
-│       ├── search.py      # Search API endpoints
-│       ├── network.py     # Network traversal endpoints
-│       └── cypher.py      # Cypher query endpoints
+│       ├── search.py      # 検索APIエンドポイント
+│       ├── network.py     # ネットワーク探索エンドポイント
+│       └── cypher.py      # Cypherクエリエンドポイント
 ├── tests/
 │   ├── __init__.py
-│   ├── conftest.py        # Test fixtures
+│   ├── conftest.py        # テストフィクスチャ
 │   ├── test_main.py
 │   ├── test_search.py
 │   ├── test_network.py
@@ -317,6 +317,6 @@ ito-server/
 └── README.md
 ```
 
-## 📜 License
+## 📜 ライセンス
 
-This project is licensed under the MIT License.
+このプロジェクトはMITライセンスの下でライセンスされています。
