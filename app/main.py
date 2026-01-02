@@ -63,7 +63,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     # Initialize SQLite database and create tables
     print("Initializing SQLite database...")
     init_db()
-    print(f"✅ SQLite database ready at {settings.DATABASE_URL}")
+    print(f"✅ SQLite database ready at {settings.DATABASE_PATH}")
 
     # Bootstrap admin user if needed
     bootstrap_admin_user()

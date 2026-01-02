@@ -12,7 +12,7 @@ from httpx import ASGITransport, AsyncClient
 os.environ["NEO4J_URL"] = "neo4j://localhost:7687"
 os.environ["NEO4J_USERNAME"] = "neo4j"
 os.environ["NEO4J_PASSWORD"] = "testpassword"
-os.environ["SECRET_KEY"] = "test-secret-key-for-testing-only"
+os.environ["SECRET_KEY"] = "test-secret-key-for-testing-only-minimum-32-chars"
 os.environ["DATABASE_PATH"] = "./test.db"
 os.environ["FIRST_ADMIN_USER"] = "testadmin"
 os.environ["FIRST_ADMIN_PASSWORD"] = "testadminpassword"
@@ -53,6 +53,8 @@ def mock_neo4j_node():
 @pytest.fixture
 def mock_authenticated_user():
     """Create a mock authenticated user for testing."""
+    from datetime import UTC
+
     from app.models.user import User
 
     mock_user = MagicMock(spec=User)
@@ -61,8 +63,8 @@ def mock_authenticated_user():
     mock_user.email = "test@example.com"
     mock_user.is_active = True
     mock_user.is_admin = False
-    mock_user.created_at = datetime.utcnow()
-    mock_user.updated_at = datetime.utcnow()
+    mock_user.created_at = datetime.now(UTC)
+    mock_user.updated_at = datetime.now(UTC)
     return mock_user
 
 

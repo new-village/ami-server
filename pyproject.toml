@@ -4,6 +4,9 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore:'crypt' is deprecated:DeprecationWarning",
+]
 
 [tool.coverage.run]
 source = ["app"]
