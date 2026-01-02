@@ -105,13 +105,15 @@ async def _process_neighbor_results(result) -> SubgraphResponse:
         neighbor_node = record.get("neighbor")
         rel = record.get("r")
 
-        if start_node and start_node.element_id not in nodes_dict:
+        if start_node is not None and start_node.element_id not in nodes_dict:
             nodes_dict[start_node.element_id] = _process_node(start_node)
 
-        if neighbor_node and neighbor_node.element_id not in nodes_dict:
+        if neighbor_node is not None and neighbor_node.element_id not in nodes_dict:
             nodes_dict[neighbor_node.element_id] = _process_node(neighbor_node)
 
-        if rel and rel.element_id not in links_dict:
+        # Neo4j Node/Relationship objects can be "falsy" when they have no properties.
+        # Avoid truthiness checks; explicitly test for None.
+        if rel is not None and rel.element_id not in links_dict:
             links_dict[rel.element_id] = _process_relationship(rel)
 
     return SubgraphResponse(

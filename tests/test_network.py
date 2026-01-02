@@ -187,6 +187,33 @@ class TestGetNeighbors:
             assert response.status_code == 404
             assert "no neighbors with label" in response.json()["detail"]
 
+    @pytest.mark.asyncio
+    async def test_get_neighbors_includes_falsy_relationship(self, test_client):
+        """Regression: include links even if Relationship is falsy (e.g., no properties)."""
+        node1 = create_mock_node("4:test:1", ["officer"], {"node_id": 12345, "name": "Person A"})
+        node2 = create_mock_node("4:test:2", ["address"], {"node_id": 67890, "address": "Somewhere"})
+        rel = create_mock_relationship("5:test:1", "所在地", node1, node2, {})
+        rel.__bool__.return_value = False
+
+        mock_result = create_mock_neo4j_result([{"start": node1, "r": rel, "neighbor": node2}])
+
+        mock_session = MagicMock()
+        mock_session.run = AsyncMock(return_value=mock_result)
+        mock_session.close = AsyncMock()
+
+        with patch("app.routers.network.get_session") as mock_get_session:
+            mock_context = MagicMock()
+            mock_context.__aenter__ = AsyncMock(return_value=mock_session)
+            mock_context.__aexit__ = AsyncMock(return_value=None)
+            mock_get_session.return_value = mock_context
+
+            response = await test_client.get("/api/v1/network/neighbors/12345")
+
+            assert response.status_code == 200
+            data = response.json()
+            assert len(data["nodes"]) == 2
+            assert len(data["links"]) == 1
+
 
 class TestShortestPath:
     """Tests for the shortest path endpoint."""
