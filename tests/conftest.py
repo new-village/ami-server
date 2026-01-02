@@ -35,7 +35,7 @@ def mock_neo4j_node():
     """Create a mock Neo4j node."""
     mock_node = MagicMock()
     mock_node.element_id = "4:test:123"
-    mock_node.labels = frozenset(["法人"])
+    mock_node.labels = frozenset(["entity"])
     mock_node.__iter__ = lambda self: iter({"node_id": 12345, "name": "Test Company"}.items())
 
     def mock_items():

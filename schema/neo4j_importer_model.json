@@ -12,15 +12,15 @@
       {
         "id": "n:4",
         "position": {
-          "x": -42.32449711484212,
-          "y": -420.43178371836336
+          "x": 9.303425587010775,
+          "y": -447.8591176537227
         }
       },
       {
         "id": "n:1",
         "position": {
-          "x": 286.1945999752664,
-          "y": -228.94641754192065
+          "x": 278.12773705310184,
+          "y": -235.39990787965223
         }
       },
       {
@@ -38,38 +38,10 @@
       "graphSchema": {
         "constraints": [
           {
-            "$id": "c:2",
-            "constraintType": "uniqueness",
-            "entityType": "node",
-            "name": "node_id_法人_uniq",
-            "nodeLabel": {
-              "$ref": "#nl:4"
-            },
-            "properties": [
-              {
-                "$ref": "#p:4_0"
-              }
-            ]
-          },
-          {
-            "$id": "c:1",
-            "constraintType": "uniqueness",
-            "entityType": "node",
-            "name": "node_id_役員/株主_uniq",
-            "nodeLabel": {
-              "$ref": "#nl:3"
-            },
-            "properties": [
-              {
-                "$ref": "#p:3_0"
-              }
-            ]
-          },
-          {
             "$id": "c:3",
+            "name": "node_id_intermediary_uniq",
             "constraintType": "uniqueness",
             "entityType": "node",
-            "name": "node_id_仲介者_uniq",
             "nodeLabel": {
               "$ref": "#nl:1"
             },
@@ -80,10 +52,38 @@
             ]
           },
           {
-            "$id": "c:4",
+            "$id": "c:1",
+            "name": "node_id_officer_uniq",
             "constraintType": "uniqueness",
             "entityType": "node",
-            "name": "node_id_住所_uniq",
+            "nodeLabel": {
+              "$ref": "#nl:3"
+            },
+            "properties": [
+              {
+                "$ref": "#p:3_0"
+              }
+            ]
+          },
+          {
+            "$id": "c:2",
+            "name": "node_id_entity_uniq",
+            "constraintType": "uniqueness",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:4"
+            },
+            "properties": [
+              {
+                "$ref": "#p:4_0"
+              }
+            ]
+          },
+          {
+            "$id": "c:4",
+            "name": "node_id_address_uniq",
+            "constraintType": "uniqueness",
+            "entityType": "node",
             "nodeLabel": {
               "$ref": "#nl:2"
             },
@@ -156,7 +156,7 @@
                 }
               }
             ],
-            "token": "役員/株主"
+            "token": "officer"
           },
           {
             "$id": "nl:4",
@@ -330,7 +330,7 @@
                 }
               }
             ],
-            "token": "法人"
+            "token": "entity"
           },
           {
             "$id": "nl:1",
@@ -416,7 +416,7 @@
                 }
               }
             ],
-            "token": "仲介者"
+            "token": "intermediary"
           },
           {
             "$id": "nl:2",
@@ -486,7 +486,7 @@
                 }
               }
             ],
-            "token": "住所"
+            "token": "address"
           }
         ],
         "nodeObjectTypes": [
@@ -662,37 +662,37 @@
                 }
               }
             ],
-            "token": "役員"
+            "token": "officer_of"
           },
           {
             "$id": "rt:2",
             "properties": [],
-            "token": "仲介"
+            "token": "intermediary_of"
           },
           {
             "$id": "rt:3",
             "properties": [],
-            "token": "所在地"
+            "token": "registered_address"
           },
           {
             "$id": "rt:4",
             "properties": [],
-            "token": "登録住所"
+            "token": "registered_address"
           },
           {
             "$id": "rt:5",
             "properties": [],
-            "token": "所在地"
+            "token": "registered_address"
           },
           {
             "$id": "rt:6",
             "properties": [],
-            "token": "同名人物"
+            "token": "same_name_as"
           },
           {
             "$id": "rt:7",
             "properties": [],
-            "token": "同一人物?"
+            "token": "similar"
           }
         ]
       },

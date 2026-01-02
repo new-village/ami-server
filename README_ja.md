@@ -209,19 +209,23 @@ docker run -p 8080:8080 \
 
 ### 検索API
 
-#### Node IDで検索
+#### 全ラベルを検索
 ```http
-GET /api/v1/search/by-id/{node_id}?label={label}
+GET /api/v1/search?node_id={node_id}&limit={limit}
+GET /api/v1/search?name={name}&limit={limit}
 ```
 
-#### 名前で検索
+#### 特定ラベルで検索
 ```http
-GET /api/v1/search/by-name?name={name}&label={label}&limit={limit}
+GET /api/v1/search/{label}?node_id={node_id}&limit={limit}
+GET /api/v1/search/{label}?name={name}&limit={limit}
 ```
 
-#### プロパティで検索
+利用可能なラベル: `officer`, `entity`, `intermediary`, `address`
+
+#### 利用可能なラベルを取得
 ```http
-GET /api/v1/search/by-property?property_name={name}&property_value={value}&exact_match={bool}&limit={limit}
+GET /api/v1/search/labels
 ```
 
 ### ネットワークAPI

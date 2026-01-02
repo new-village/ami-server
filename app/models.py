@@ -4,18 +4,18 @@ Defines schemas for nodes, links, and API responses based on
 the Neo4j graph schema (schema/neo4j_importer_model.json).
 
 Node Labels:
-- 役員/株主 (Officer): Officers and shareholders
-- 法人 (Entity): Corporate entities
-- 仲介者 (Intermediary): Intermediaries
-- 住所 (Address): Addresses
+- officer: Officers and shareholders
+- entity: Corporate entities
+- intermediary: Intermediaries
+- address: Addresses
 
 Relationship Types:
-- 役員: Officer relationship
-- 仲介: Intermediary relationship
-- 所在地: Location relationship
-- 登録住所: Registered address relationship
-- 同名人物: Same name person
-- 同一人物?: Possibly same person
+- officer_of: Officer relationship
+- intermediary_of: Intermediary relationship
+- registered_address: Registered address relationship
+- same_name_as: Same name person
+- similar_company_as: Similar company
+- same_address_as: Same address
 """
 
 from enum import Enum
@@ -31,21 +31,21 @@ from pydantic import BaseModel, Field
 class NodeLabel(str, Enum):
     """Available node labels in the graph schema."""
 
-    OFFICER = "役員/株主"
-    ENTITY = "法人"
-    INTERMEDIARY = "仲介者"
-    ADDRESS = "住所"
+    OFFICER = "officer"
+    ENTITY = "entity"
+    INTERMEDIARY = "intermediary"
+    ADDRESS = "address"
 
 
 class RelationshipType(str, Enum):
     """Available relationship types in the graph schema."""
 
-    OFFICER = "役員"
-    INTERMEDIARY = "仲介"
-    LOCATION = "所在地"
-    REGISTERED_ADDRESS = "登録住所"
-    SAME_NAME = "同名人物"
-    POSSIBLY_SAME = "同一人物?"
+    OFFICER_OF = "officer_of"
+    INTERMEDIARY_OF = "intermediary_of"
+    REGISTERED_ADDRESS = "registered_address"
+    SAME_NAME_AS = "same_name_as"
+    SIMILAR_COMPANY_AS = "similar_company_as"
+    SAME_ADDRESS_AS = "same_address_as"
 
 
 # =============================================================================
