@@ -48,9 +48,10 @@ def _neo4j_node_to_graph_node(record: dict, node_key: str = "n") -> GraphNode:
     "",
     response_model=SearchResponse,
     summary="Search nodes across all labels",
-    description="Search for nodes by node_id or name across all node labels.",
+    description="Search for nodes by node_id or name across all node labels. Requires authentication.",
 )
 async def search_all(
+    current_user: Annotated[User, Depends(get_current_active_user)],
     node_id: int | None = Query(None, description="Search by node_id (exact match)"),
     name: str | None = Query(None, min_length=1, description="Search by name (partial match, case-insensitive)"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum results to return"),
@@ -58,6 +59,7 @@ async def search_all(
     """Search for nodes across all labels.
 
     Args:
+        current_user: The authenticated user (injected by dependency).
         node_id: Search by node_id (exact match).
         name: Search by name (partial match, case-insensitive).
         limit: Maximum number of results to return.
@@ -102,10 +104,15 @@ async def search_all(
 @router.get(
     "/labels",
     summary="Get available node labels",
-    description="Return all available node labels in the schema.",
+    description="Return all available node labels in the schema. Requires authentication.",
 )
-async def get_labels() -> dict:
+async def get_labels(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> dict:
     """Get all available node labels.
+
+    Args:
+        current_user: The authenticated user (injected by dependency).
 
     Returns:
         Dictionary with available labels and their descriptions.
@@ -124,10 +131,11 @@ async def get_labels() -> dict:
     "/{label}",
     response_model=SearchResponse,
     summary="Search nodes by specific label",
-    description="Search for nodes by node_id or name within a specific label.",
+    description="Search for nodes by node_id or name within a specific label. Requires authentication.",
 )
 async def search_by_label(
     label: NodeLabel,
+    current_user: Annotated[User, Depends(get_current_active_user)],
     node_id: int | None = Query(None, description="Search by node_id (exact match)"),
     name: str | None = Query(None, min_length=1, description="Search by name (partial match, case-insensitive)"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum results to return"),
@@ -136,6 +144,7 @@ async def search_by_label(
 
     Args:
         label: Node label to search within.
+        current_user: The authenticated user (injected by dependency).
         node_id: Search by node_id (exact match).
         name: Search by name (partial match, case-insensitive).
         limit: Maximum number of results to return.

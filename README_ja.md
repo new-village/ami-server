@@ -42,13 +42,13 @@
 
 ### コアAPI
 
-1. **検索ノードAPI** (`/api/v1/search/`)
+1. **検索ノードAPI** (`/api/v1/search/`) 🔒
    - `node_id`でノードを検索
    - 名前で検索（部分一致）
    - 任意のプロパティで検索
    - ノードラベルでフィルタリング
 
-2. **ネットワークAPI** (`/api/v1/network/`)
+2. **ネットワークAPI** (`/api/v1/network/`) 🔒
    - ノードの隣接ノードを取得
    - ラベルで隣接ノードをフィルタリング
    - ノード間の最短経路を検索
@@ -230,18 +230,20 @@ docker run -p 8080:8080 \
 
 ## 📖 APIドキュメント
 
-### 検索API
+### 検索API (🔒 認証必須)
 
 #### 全ラベルを検索
 ```http
 GET /api/v1/search?node_id={node_id}&limit={limit}
 GET /api/v1/search?name={name}&limit={limit}
+Authorization: Bearer <token>
 ```
 
 #### 特定ラベルで検索
 ```http
 GET /api/v1/search/{label}?node_id={node_id}&limit={limit}
 GET /api/v1/search/{label}?name={name}&limit={limit}
+Authorization: Bearer <token>
 ```
 
 利用可能なラベル: `officer`, `entity`, `intermediary`, `address`
@@ -249,14 +251,16 @@ GET /api/v1/search/{label}?name={name}&limit={limit}
 #### 利用可能なラベルを取得
 ```http
 GET /api/v1/search/labels
+Authorization: Bearer <token>
 ```
 
-### ネットワークAPI
+### ネットワークAPI (🔒 認証必須)
 
 #### 隣接ノード取得
 ```http
 GET /api/v1/network/neighbors/{node_id}
 GET /api/v1/network/neighbors/{node_id}?label={label}&limit={limit}
+Authorization: Bearer <token>
 ```
 
 パラメータ:
@@ -267,6 +271,7 @@ GET /api/v1/network/neighbors/{node_id}?label={label}&limit={limit}
 ```http
 GET /api/v1/network/shortest-path?start_node_id={id1}&end_node_id={id2}
 GET /api/v1/network/shortest-path?start_node_id={id1}&end_node_id={id2}&max_hops={hops}
+Authorization: Bearer <token>
 ```
 
 パラメータ:

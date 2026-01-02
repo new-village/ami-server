@@ -1,6 +1,8 @@
 """Network Traversal API router for retrieving subgraphs."""
 
-from fastapi import APIRouter, HTTPException, Query
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.db.neo4j import get_session
 from app.models import (
@@ -9,6 +11,8 @@ from app.models import (
     NodeLabel,
     SubgraphResponse,
 )
+from app.models.user import User
+from app.auth.dependencies import get_current_active_user
 from app.config import get_settings
 
 router = APIRouter(prefix="/network", tags=["network"])
@@ -127,10 +131,11 @@ async def _process_neighbor_results(result) -> SubgraphResponse:
     response_model=SubgraphResponse,
     summary="Get immediate neighbors of a node",
     description="Retrieve all directly connected nodes (1-hop) for a specific node. "
-    "Optionally filter neighbors by their label.",
+    "Optionally filter neighbors by their label. Requires authentication.",
 )
 async def get_neighbors(
     node_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
     label: NodeLabel | None = Query(None, description="Filter neighbors by this label"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum neighbors to return"),
 ) -> SubgraphResponse:
@@ -138,6 +143,7 @@ async def get_neighbors(
 
     Args:
         node_id: The node's node_id property.
+        current_user: The authenticated user (injected by dependency).
         label: Optional label to filter neighbors (not the starting node).
         limit: Maximum number of neighbors to return.
 
@@ -202,9 +208,10 @@ async def get_neighbors(
     "/shortest-path",
     response_model=SubgraphResponse,
     summary="Find shortest path between two nodes",
-    description="Find the shortest path between two nodes by their node_ids.",
+    description="Find the shortest path between two nodes by their node_ids. Requires authentication.",
 )
 async def find_shortest_path(
+    current_user: Annotated[User, Depends(get_current_active_user)],
     start_node_id: int = Query(..., description="Starting node's node_id"),
     end_node_id: int = Query(..., description="Ending node's node_id"),
     max_hops: int = Query(4, ge=1, le=10, description="Maximum path length (default: 4)"),
@@ -212,6 +219,7 @@ async def find_shortest_path(
     """Find the shortest path between two nodes.
 
     Args:
+        current_user: The authenticated user (injected by dependency).
         start_node_id: The starting node's node_id property.
         end_node_id: The ending node's node_id property.
         max_hops: Maximum number of hops to search (default: 4).
@@ -245,10 +253,15 @@ async def find_shortest_path(
 @router.get(
     "/relationship-types",
     summary="Get available relationship types",
-    description="Return all available relationship types in the schema.",
+    description="Return all available relationship types in the schema. Requires authentication.",
 )
-async def get_relationship_types() -> dict:
+async def get_relationship_types(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> dict:
     """Get all available relationship types.
+
+    Args:
+        current_user: The authenticated user (injected by dependency).
 
     Returns:
         Dictionary with available relationship types and their descriptions.

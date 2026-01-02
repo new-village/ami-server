@@ -85,7 +85,7 @@ class TestGetNeighbors:
     """Tests for the get neighbors endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_neighbors(self, test_client):
+    async def test_get_neighbors(self, authenticated_test_client):
         """Test getting neighbors of a node."""
         node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
         node2 = create_mock_node("4:test:2", ["officer"], {"node_id": 12346, "name": "Person B"})
@@ -103,7 +103,7 @@ class TestGetNeighbors:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/network/neighbors/12345")
+            response = await authenticated_test_client.get("/api/v1/network/neighbors/12345")
 
             assert response.status_code == 200
             data = response.json()
@@ -113,7 +113,7 @@ class TestGetNeighbors:
             assert len(data["links"]) == 1
 
     @pytest.mark.asyncio
-    async def test_get_neighbors_with_label_filter(self, test_client):
+    async def test_get_neighbors_with_label_filter(self, authenticated_test_client):
         """Test getting neighbors filtered by label."""
         node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
         node2 = create_mock_node("4:test:2", ["officer"], {"node_id": 12346, "name": "Person B"})
@@ -131,7 +131,7 @@ class TestGetNeighbors:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/network/neighbors/12345?label=officer")
+            response = await authenticated_test_client.get("/api/v1/network/neighbors/12345?label=officer")
 
             assert response.status_code == 200
             data = response.json()
@@ -139,7 +139,7 @@ class TestGetNeighbors:
             assert "links" in data
 
     @pytest.mark.asyncio
-    async def test_get_neighbors_node_not_found(self, test_client):
+    async def test_get_neighbors_node_not_found(self, authenticated_test_client):
         """Test getting neighbors of a non-existent node."""
         # First query returns no results
         mock_result = create_mock_neo4j_result([])
@@ -157,12 +157,12 @@ class TestGetNeighbors:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/network/neighbors/99999999")
+            response = await authenticated_test_client.get("/api/v1/network/neighbors/99999999")
 
             assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_get_neighbors_no_neighbors_with_label(self, test_client):
+    async def test_get_neighbors_no_neighbors_with_label(self, authenticated_test_client):
         """Test getting neighbors when node exists but has no neighbors with specified label."""
         node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
 
@@ -182,13 +182,13 @@ class TestGetNeighbors:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/network/neighbors/12345?label=intermediary")
+            response = await authenticated_test_client.get("/api/v1/network/neighbors/12345?label=intermediary")
 
             assert response.status_code == 404
             assert "no neighbors with label" in response.json()["detail"]
 
     @pytest.mark.asyncio
-    async def test_get_neighbors_includes_falsy_relationship(self, test_client):
+    async def test_get_neighbors_includes_falsy_relationship(self, authenticated_test_client):
         """Regression: include links even if Relationship is falsy (e.g., no properties)."""
         node1 = create_mock_node("4:test:1", ["officer"], {"node_id": 12345, "name": "Person A"})
         node2 = create_mock_node("4:test:2", ["address"], {"node_id": 67890, "address": "Somewhere"})
@@ -207,19 +207,25 @@ class TestGetNeighbors:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/network/neighbors/12345")
+            response = await authenticated_test_client.get("/api/v1/network/neighbors/12345")
 
             assert response.status_code == 200
             data = response.json()
             assert len(data["nodes"]) == 2
             assert len(data["links"]) == 1
 
+    @pytest.mark.asyncio
+    async def test_get_neighbors_requires_auth(self, test_client):
+        """Test that neighbors endpoint requires authentication."""
+        response = await test_client.get("/api/v1/network/neighbors/12345")
+        assert response.status_code == 401
+
 
 class TestShortestPath:
     """Tests for the shortest path endpoint."""
 
     @pytest.mark.asyncio
-    async def test_find_shortest_path_with_default_max_hops(self, test_client):
+    async def test_find_shortest_path_with_default_max_hops(self, authenticated_test_client):
         """Test finding shortest path with default max_hops (4)."""
         node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
         node2 = create_mock_node("4:test:2", ["officer"], {"node_id": 12346, "name": "Person B"})
@@ -239,7 +245,7 @@ class TestShortestPath:
             mock_get_session.return_value = mock_context
 
             # Call without max_hops - should use default value of 4
-            response = await test_client.get(
+            response = await authenticated_test_client.get(
                 "/api/v1/network/shortest-path?start_node_id=12345&end_node_id=12346"
             )
 
@@ -254,7 +260,7 @@ class TestShortestPath:
             assert "[*1..4]" in query
 
     @pytest.mark.asyncio
-    async def test_find_shortest_path_with_custom_max_hops(self, test_client):
+    async def test_find_shortest_path_with_custom_max_hops(self, authenticated_test_client):
         """Test finding shortest path with custom max_hops."""
         node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
         node2 = create_mock_node("4:test:2", ["officer"], {"node_id": 12346, "name": "Person B"})
@@ -274,7 +280,7 @@ class TestShortestPath:
             mock_get_session.return_value = mock_context
 
             # Call with custom max_hops=7
-            response = await test_client.get(
+            response = await authenticated_test_client.get(
                 "/api/v1/network/shortest-path?start_node_id=12345&end_node_id=12346&max_hops=7"
             )
 
@@ -289,7 +295,7 @@ class TestShortestPath:
             assert "[*1..7]" in query
 
     @pytest.mark.asyncio
-    async def test_shortest_path_not_found(self, test_client):
+    async def test_shortest_path_not_found(self, authenticated_test_client):
         """Test when no path exists between nodes."""
         mock_result = create_mock_neo4j_result([])
 
@@ -303,22 +309,36 @@ class TestShortestPath:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get(
+            response = await authenticated_test_client.get(
                 "/api/v1/network/shortest-path?start_node_id=12345&end_node_id=99999"
             )
 
             assert response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_shortest_path_requires_auth(self, test_client):
+        """Test that shortest-path endpoint requires authentication."""
+        response = await test_client.get(
+            "/api/v1/network/shortest-path?start_node_id=12345&end_node_id=99999"
+        )
+        assert response.status_code == 401
 
 
 class TestGetRelationshipTypes:
     """Tests for the get relationship types endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_relationship_types(self, test_client):
+    async def test_get_relationship_types(self, authenticated_test_client):
         """Test getting available relationship types."""
-        response = await test_client.get("/api/v1/network/relationship-types")
+        response = await authenticated_test_client.get("/api/v1/network/relationship-types")
 
         assert response.status_code == 200
         data = response.json()
         assert "relationship_types" in data
         assert len(data["relationship_types"]) == 6  # 6 relationship types in schema
+
+    @pytest.mark.asyncio
+    async def test_get_relationship_types_requires_auth(self, test_client):
+        """Test that relationship-types endpoint requires authentication."""
+        response = await test_client.get("/api/v1/network/relationship-types")
+        assert response.status_code == 401

@@ -42,13 +42,13 @@ A FastAPI-based REST API backend for network investigation, connecting to Neo4j 
 
 ### Core APIs
 
-1. **Search Node API** (`/api/v1/search/`)
+1. **Search Node API** (`/api/v1/search/`) 🔒
    - Find nodes by `node_id`
    - Search by name (partial match)
    - Search by any property
    - Filter by node label
 
-2. **Network API** (`/api/v1/network/`)
+2. **Network API** (`/api/v1/network/`) 🔒
    - Get immediate neighbors of a node
    - Filter neighbors by label
    - Find shortest path between nodes
@@ -230,18 +230,20 @@ docker run -p 8080:8080 \
 
 ## 📖 API Documentation
 
-### Search API
+### Search API (🔒 Requires Authentication)
 
 #### Search All Labels
 ```http
 GET /api/v1/search?node_id={node_id}&limit={limit}
 GET /api/v1/search?name={name}&limit={limit}
+Authorization: Bearer <token>
 ```
 
 #### Search by Specific Label
 ```http
 GET /api/v1/search/{label}?node_id={node_id}&limit={limit}
 GET /api/v1/search/{label}?name={name}&limit={limit}
+Authorization: Bearer <token>
 ```
 
 Available labels: `officer`, `entity`, `intermediary`, `address`
@@ -249,14 +251,16 @@ Available labels: `officer`, `entity`, `intermediary`, `address`
 #### Get Available Labels
 ```http
 GET /api/v1/search/labels
+Authorization: Bearer <token>
 ```
 
-### Network API
+### Network API (🔒 Requires Authentication)
 
 #### Get Neighbors
 ```http
 GET /api/v1/network/neighbors/{node_id}
 GET /api/v1/network/neighbors/{node_id}?label={label}&limit={limit}
+Authorization: Bearer <token>
 ```
 
 Parameters:
@@ -267,6 +271,7 @@ Parameters:
 ```http
 GET /api/v1/network/shortest-path?start_node_id={id1}&end_node_id={id2}
 GET /api/v1/network/shortest-path?start_node_id={id1}&end_node_id={id2}&max_hops={hops}
+Authorization: Bearer <token>
 ```
 
 Parameters:
