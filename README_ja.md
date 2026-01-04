@@ -323,11 +323,13 @@ Content-Type: application/json
 #### スキーマ取得
 ```http
 GET /api/v1/cypher/schema
+Authorization: Bearer <token>
 ```
 
 #### 統計取得
 ```http
 GET /api/v1/cypher/stats
+Authorization: Bearer <token>
 ```
 
 ### 認証API

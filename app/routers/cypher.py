@@ -171,10 +171,15 @@ async def execute_cypher(
 @router.get(
     "/schema",
     summary="Get database schema",
-    description="Retrieve the database schema including node labels, relationship types, and properties.",
+    description="Retrieve the database schema including node labels, relationship types, and properties. Requires authentication.",
 )
-async def get_schema() -> dict:
+async def get_schema(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> dict:
     """Get the database schema.
+
+    Args:
+        current_user: The authenticated user (injected by dependency).
 
     Returns:
         Dictionary containing node labels, relationship types, and their properties.
@@ -218,10 +223,15 @@ async def get_schema() -> dict:
 @router.get(
     "/stats",
     summary="Get database statistics",
-    description="Retrieve basic statistics about the database.",
+    description="Retrieve basic statistics about the database. Requires authentication.",
 )
-async def get_stats() -> dict:
+async def get_stats(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> dict:
     """Get basic database statistics.
+
+    Args:
+        current_user: The authenticated user (injected by dependency).
 
     Returns:
         Dictionary containing node and relationship counts.

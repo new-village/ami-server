@@ -323,11 +323,13 @@ Content-Type: application/json
 #### Get Schema
 ```http
 GET /api/v1/cypher/schema
+Authorization: Bearer <token>
 ```
 
 #### Get Statistics
 ```http
 GET /api/v1/cypher/stats
+Authorization: Bearer <token>
 ```
 
 ### Authentication API

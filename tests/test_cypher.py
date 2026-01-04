@@ -138,7 +138,7 @@ class TestGetSchema:
     """Tests for the get schema endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_schema(self, test_client):
+    async def test_get_schema(self, authenticated_test_client):
         """Test getting database schema."""
 
         class MockAsyncIterator:
@@ -185,7 +185,7 @@ class TestGetSchema:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/cypher/schema")
+            response = await authenticated_test_client.get("/api/v1/cypher/schema")
 
             assert response.status_code == 200
             data = response.json()
@@ -193,12 +193,18 @@ class TestGetSchema:
             assert "relationship_types" in data
             assert "property_keys" in data
 
+    @pytest.mark.asyncio
+    async def test_get_schema_requires_auth(self, test_client):
+        """Test that schema endpoint requires authentication."""
+        response = await test_client.get("/api/v1/cypher/schema")
+        assert response.status_code == 401
+
 
 class TestGetStats:
     """Tests for the get statistics endpoint."""
 
     @pytest.mark.asyncio
-    async def test_get_stats(self, test_client):
+    async def test_get_stats(self, authenticated_test_client):
         """Test getting database statistics."""
         mock_record = MagicMock()
         mock_record.__getitem__ = lambda self, key: {"nodeCount": 1000, "relationshipCount": 5000}[key]
@@ -216,9 +222,15 @@ class TestGetStats:
             mock_context.__aexit__ = AsyncMock(return_value=None)
             mock_get_session.return_value = mock_context
 
-            response = await test_client.get("/api/v1/cypher/stats")
+            response = await authenticated_test_client.get("/api/v1/cypher/stats")
 
             assert response.status_code == 200
             data = response.json()
             assert "node_count" in data
             assert "relationship_count" in data
+
+    @pytest.mark.asyncio
+    async def test_get_stats_requires_auth(self, test_client):
+        """Test that stats endpoint requires authentication."""
+        response = await test_client.get("/api/v1/cypher/stats")
+        assert response.status_code == 401
