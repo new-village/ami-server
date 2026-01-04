@@ -55,6 +55,7 @@ async def search_all(
     node_id: int | None = Query(None, description="Search by node_id (exact match)"),
     name: str | None = Query(None, min_length=1, description="Search by name (partial match, case-insensitive)"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum results to return"),
+    offset: int = Query(0, ge=0, description="Number of results to skip for pagination"),
 ) -> SearchResponse:
     """Search for nodes across all labels.
 
@@ -63,6 +64,7 @@ async def search_all(
         node_id: Search by node_id (exact match).
         name: Search by name (partial match, case-insensitive).
         limit: Maximum number of results to return.
+        offset: Number of results to skip for pagination.
 
     Returns:
         SearchResponse with matching nodes.
@@ -80,17 +82,17 @@ async def search_all(
         query = """
         MATCH (n) WHERE n.node_id = $node_id 
         RETURN n, labels(n)[0] AS _label, elementId(n) AS _element_id 
-        LIMIT $limit
+        SKIP $offset LIMIT $limit
         """
-        params = {"node_id": node_id, "limit": limit}
+        params = {"node_id": node_id, "limit": limit, "offset": offset}
     else:
         query = """
         MATCH (n)
         WHERE n.name IS NOT NULL AND toLower(n.name) CONTAINS toLower($name)
         RETURN n, labels(n)[0] AS _label, elementId(n) AS _element_id
-        LIMIT $limit
+        SKIP $offset LIMIT $limit
         """
-        params = {"name": name, "limit": limit}
+        params = {"name": name, "limit": limit, "offset": offset}
 
     async with get_session() as session:
         result = await session.run(query, params)
@@ -139,6 +141,7 @@ async def search_by_label(
     node_id: int | None = Query(None, description="Search by node_id (exact match)"),
     name: str | None = Query(None, min_length=1, description="Search by name (partial match, case-insensitive)"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum results to return"),
+    offset: int = Query(0, ge=0, description="Number of results to skip for pagination"),
 ) -> SearchResponse:
     """Search for nodes within a specific label.
 
@@ -148,6 +151,7 @@ async def search_by_label(
         node_id: Search by node_id (exact match).
         name: Search by name (partial match, case-insensitive).
         limit: Maximum number of results to return.
+        offset: Number of results to skip for pagination.
 
     Returns:
         SearchResponse with matching nodes.
@@ -165,17 +169,17 @@ async def search_by_label(
         query = f"""
         MATCH (n:`{label.value}`) WHERE n.node_id = $node_id 
         RETURN n, labels(n)[0] AS _label, elementId(n) AS _element_id 
-        LIMIT $limit
+        SKIP $offset LIMIT $limit
         """
-        params = {"node_id": node_id, "limit": limit}
+        params = {"node_id": node_id, "limit": limit, "offset": offset}
     else:
         query = f"""
         MATCH (n:`{label.value}`)
         WHERE n.name IS NOT NULL AND toLower(n.name) CONTAINS toLower($name)
         RETURN n, labels(n)[0] AS _label, elementId(n) AS _element_id
-        LIMIT $limit
+        SKIP $offset LIMIT $limit
         """
-        params = {"name": name, "limit": limit}
+        params = {"name": name, "limit": limit, "offset": offset}
 
     async with get_session() as session:
         result = await session.run(query, params)
