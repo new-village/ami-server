@@ -8,7 +8,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │                         Cloud Run                                │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │                      ITO Server                            │  │
+│  │                      AMI Server                            │  │
 │  │  ┌─────────┐  ┌──────────┐  ┌──────────┐  ┌───────────┐  │  │
 │  │  │ 検索    │  │ネットワ  │  │ Cypher🔒 │  │ ヘルス    │  │  │
 │  │  │  API    │  │ーク API  │  │   API    │  │ チェック  │  │  │
@@ -45,7 +45,7 @@
 1. **検索ノードAPI** (`/api/v1/search/`) 🔒
    - `node_id`でノードを検索
    - 名前で検索（部分一致）
-   - 任意のプロパティで検索
+   - `limit`と`offset`によるページネーション
    - ノードラベルでフィルタリング
 
 2. **ネットワークAPI** (`/api/v1/network/`) 🔒
@@ -61,6 +61,7 @@
 4. **認証API** (`/api/v1/auth/`)
    - JWTトークンを使用したOAuth2パスワードフロー
    - ユーザーログインとトークン生成
+   - ユーザーログアウト（トークン無効化）
    - ユーザープロファイル取得
    - SQLiteベースのユーザーストレージ
 
@@ -191,7 +192,7 @@ docker run -p 8080:8080 \
   -e NEO4J_URL=neo4j+s://your-instance.databases.neo4j.io \
   -e NEO4J_USERNAME=neo4j \
   -e NEO4J_PASSWORD=your-password \
-   ami-server
+  ami-server
 ```
 
 ## ☁️ Google Cloud Runデプロイ
@@ -205,8 +206,8 @@ docker run -p 8080:8080 \
 
 2. **Cloud Runにデプロイ**
    ```bash
-    gcloud run deploy ami-server \
-       --image gcr.io/YOUR_PROJECT_ID/ami-server \
+   gcloud run deploy ami-server \
+     --image gcr.io/YOUR_PROJECT_ID/ami-server \
      --platform managed \
      --region asia-northeast1 \
      --allow-unauthenticated \
@@ -234,15 +235,21 @@ docker run -p 8080:8080 \
 
 #### 全ラベルを検索
 ```http
-GET /api/v1/search?node_id={node_id}&limit={limit}
-GET /api/v1/search?name={name}&limit={limit}
+GET /api/v1/search?node_id={node_id}&limit={limit}&offset={offset}
+GET /api/v1/search?name={name}&limit={limit}&offset={offset}
 Authorization: Bearer <token>
 ```
 
+パラメータ:
+- `node_id` (任意): node_idで検索（完全一致）
+- `name` (任意): 名前で検索（部分一致、大文字小文字区別なし）
+- `limit` (任意): 返す結果の最大数（デフォルト: 100、最大: 1000）
+- `offset` (任意): ページネーション用にスキップする結果数（デフォルト: 0）
+
 #### 特定ラベルで検索
 ```http
-GET /api/v1/search/{label}?node_id={node_id}&limit={limit}
-GET /api/v1/search/{label}?name={name}&limit={limit}
+GET /api/v1/search/{label}?node_id={node_id}&limit={limit}&offset={offset}
+GET /api/v1/search/{label}?name={name}&limit={limit}&offset={offset}
 Authorization: Bearer <token>
 ```
 
@@ -316,6 +323,19 @@ username=admin&password=admin
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "token_type": "bearer"
+}
+```
+
+#### ログアウト
+```http
+POST /api/v1/auth/logout
+Authorization: Bearer <token>
+```
+
+レスポンス:
+```json
+{
+  "message": "Successfully logged out"
 }
 ```
 
