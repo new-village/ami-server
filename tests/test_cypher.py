@@ -4,31 +4,67 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 
+def create_mock_node(element_id, labels, properties):
+    """Create a mock Neo4j node."""
+    mock_node = MagicMock()
+    mock_node.element_id = element_id
+    mock_node.labels = frozenset(labels)
+    mock_node.__iter__ = lambda self: iter(properties.items())
+    mock_node.items = lambda: properties.items()
+    return mock_node
+
+
+def create_mock_relationship(element_id, rel_type, start_node, end_node, properties):
+    """Create a mock Neo4j relationship."""
+    mock_rel = MagicMock()
+    mock_rel.element_id = element_id
+    mock_rel.type = rel_type
+    mock_rel.start_node = start_node
+    mock_rel.end_node = end_node
+    mock_rel.items = lambda: properties.items()
+    mock_rel.__iter__ = lambda self: iter(properties.items())
+    # Remove labels attribute to differentiate from nodes
+    del mock_rel.labels
+    return mock_rel
+
+
+class MockAsyncIterator:
+    """Mock async iterator for Neo4j results."""
+    def __init__(self, items):
+        self.items = items
+        self.index = 0
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if self.index >= len(self.items):
+            raise StopAsyncIteration
+        item = self.items[self.index]
+        self.index += 1
+        # Create a mock record with values() method
+        mock_record = MagicMock()
+        if isinstance(item, dict):
+            mock_record.values = MagicMock(return_value=list(item.values()))
+        else:
+            mock_record.values = MagicMock(return_value=[item])
+        return mock_record
+
+
 class TestExecuteCypher:
     """Tests for the execute Cypher endpoint."""
 
     @pytest.mark.asyncio
     async def test_execute_valid_query(self, authenticated_test_client):
-        """Test executing a valid Cypher query."""
-
-        class MockAsyncIterator:
-            def __init__(self, items):
-                self.items = items
-                self.index = 0
-
-            def __aiter__(self):
-                return self
-
-            async def __anext__(self):
-                if self.index >= len(self.items):
-                    raise StopAsyncIteration
-                item = self.items[self.index]
-                self.index += 1
-                return item
+        """Test executing a valid Cypher query returning nodes."""
+        node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
+        node2 = create_mock_node("4:test:2", ["officer"], {"node_id": 12346, "name": "Person B"})
+        # Use the same node objects in the relationship to avoid duplication
+        rel = create_mock_relationship("5:test:1", "役員", node2, node1, {})
 
         mock_result = MagicMock()
-        mock_result.keys = MagicMock(return_value=["count"])
-        mock_result.__aiter__ = lambda self: MockAsyncIterator([{"count": 100}])
+        mock_result.keys = MagicMock(return_value=["n", "r", "m"])
+        mock_result.__aiter__ = lambda self: MockAsyncIterator([{"n": node1, "r": rel, "m": node2}])
 
         mock_session = MagicMock()
         mock_session.run = AsyncMock(return_value=mock_result)
@@ -42,14 +78,20 @@ class TestExecuteCypher:
 
             response = await authenticated_test_client.post(
                 "/api/v1/cypher/execute",
-                json={"query": "MATCH (n) RETURN count(n) AS count"}
+                json={"query": "MATCH (n)-[r]-(m) RETURN n, r, m LIMIT 1"}
             )
 
             assert response.status_code == 200
             data = response.json()
-            assert "results" in data
-            assert "count" in data
-            assert "keys" in data
+            assert "components" in data
+            assert "total_nodes" in data
+            assert "total_links" in data
+            assert "component_count" in data
+            # Should have at least 2 nodes and 1 link in 1 component
+            # Note: relationship's start_node/end_node might add extra nodes
+            assert data["total_nodes"] >= 2
+            assert data["total_links"] == 1
+            assert data["component_count"] == 1
 
     @pytest.mark.asyncio
     async def test_execute_empty_query(self, authenticated_test_client):
@@ -66,22 +108,6 @@ class TestExecuteCypher:
     @pytest.mark.asyncio
     async def test_execute_with_parameters(self, authenticated_test_client):
         """Test executing query with parameters."""
-
-        class MockAsyncIterator:
-            def __init__(self, items):
-                self.items = items
-                self.index = 0
-
-            def __aiter__(self):
-                return self
-
-            async def __anext__(self):
-                if self.index >= len(self.items):
-                    raise StopAsyncIteration
-                item = self.items[self.index]
-                self.index += 1
-                return item
-
         mock_result = MagicMock()
         mock_result.keys = MagicMock(return_value=["n"])
         mock_result.__aiter__ = lambda self: MockAsyncIterator([])
@@ -105,6 +131,41 @@ class TestExecuteCypher:
             )
 
             assert response.status_code == 200
+            data = response.json()
+            assert data["total_nodes"] == 0
+            assert data["component_count"] == 0
+
+    @pytest.mark.asyncio
+    async def test_execute_multiple_components(self, authenticated_test_client):
+        """Test that disconnected nodes are returned as separate components."""
+        # Two disconnected nodes
+        node1 = create_mock_node("4:test:1", ["entity"], {"node_id": 12345, "name": "Company A"})
+        node2 = create_mock_node("4:test:2", ["entity"], {"node_id": 12346, "name": "Company B"})
+
+        mock_result = MagicMock()
+        mock_result.keys = MagicMock(return_value=["n"])
+        mock_result.__aiter__ = lambda self: MockAsyncIterator([{"n": node1}, {"n": node2}])
+
+        mock_session = MagicMock()
+        mock_session.run = AsyncMock(return_value=mock_result)
+        mock_session.close = AsyncMock()
+
+        with patch("app.routers.cypher.get_session") as mock_get_session:
+            mock_context = MagicMock()
+            mock_context.__aenter__ = AsyncMock(return_value=mock_session)
+            mock_context.__aexit__ = AsyncMock(return_value=None)
+            mock_get_session.return_value = mock_context
+
+            response = await authenticated_test_client.post(
+                "/api/v1/cypher/execute",
+                json={"query": "MATCH (n:entity) RETURN n LIMIT 2"}
+            )
+
+            assert response.status_code == 200
+            data = response.json()
+            assert data["total_nodes"] == 2
+            assert data["total_links"] == 0
+            assert data["component_count"] == 2  # Two disconnected nodes
 
     @pytest.mark.asyncio
     async def test_execute_dangerous_query_rejected(self, authenticated_test_client):

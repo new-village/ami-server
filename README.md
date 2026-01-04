@@ -309,14 +309,52 @@ Response:
 ### Cypher API (🔒 Requires Authentication)
 
 #### Execute Query
+Execute a Cypher query and return results grouped by connected components. The response includes nodes and relationships organized into disconnected subgraphs.
+
 ```http
 POST /api/v1/cypher/execute
 Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "query": "MATCH (n) RETURN n LIMIT 10",
+  "query": "MATCH (n)-[r]-(m) RETURN n, r, m LIMIT 100",
   "parameters": {}
+}
+```
+
+Response:
+```json
+{
+  "components": [
+    {
+      "nodes": [
+        {
+          "id": "4:abc:1",
+          "node_id": 12345,
+          "label": "entity",
+          "properties": {"name": "Company A"}
+        },
+        {
+          "id": "4:abc:2",
+          "node_id": 12346,
+          "label": "officer",
+          "properties": {"name": "Person B"}
+        }
+      ],
+      "links": [
+        {
+          "id": "5:abc:1",
+          "source": "4:abc:2",
+          "target": "4:abc:1",
+          "type": "役員",
+          "properties": {}
+        }
+      ]
+    }
+  ],
+  "total_nodes": 2,
+  "total_links": 1,
+  "component_count": 1
 }
 ```
 

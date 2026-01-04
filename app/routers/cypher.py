@@ -1,5 +1,6 @@
 """Async Cypher Query API router for executing arbitrary queries."""
 
+from collections import defaultdict
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -7,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from app.db.neo4j import get_session
 from app.models.user import User
+from app.models.graph import GraphNode, GraphLink, SubgraphResponse
 from app.auth.dependencies import get_current_active_user
 
 router = APIRouter(prefix="/cypher", tags=["cypher"])
@@ -22,15 +24,16 @@ class CypherRequest(BaseModel):
     )
 
 
-class CypherResponse(BaseModel):
-    """Response model for Cypher query results."""
+class ConnectedComponentsResponse(BaseModel):
+    """Response model for Cypher query results with connected components."""
 
-    results: list[dict[str, Any]] = Field(
+    components: list[SubgraphResponse] = Field(
         default_factory=list,
-        description="Raw query results"
+        description="List of connected components, each containing nodes and links"
     )
-    count: int = Field(default=0, description="Number of records returned")
-    keys: list[str] = Field(default_factory=list, description="Column keys in the result")
+    total_nodes: int = Field(default=0, description="Total number of nodes")
+    total_links: int = Field(default=0, description="Total number of links")
+    component_count: int = Field(default=0, description="Number of connected components")
 
 
 def _serialize_neo4j_value(value: Any) -> Any:
@@ -97,16 +100,145 @@ def _serialize_record(record: dict) -> dict:
     return {key: _serialize_neo4j_value(value) for key, value in record.items()}
 
 
+def _extract_graph_elements(value: Any, nodes: dict, links: dict) -> None:
+    """Extract nodes and relationships from a Neo4j value recursively.
+
+    Args:
+        value: A value from Neo4j query result.
+        nodes: Dictionary to store extracted nodes (keyed by element_id).
+        links: Dictionary to store extracted links (keyed by element_id).
+    """
+    if value is None:
+        return
+
+    # Handle Neo4j Node
+    if hasattr(value, 'element_id') and hasattr(value, 'labels'):
+        if value.element_id not in nodes:
+            properties = dict(value)
+            node_id = properties.pop("node_id", 0)
+            labels = list(value.labels)
+            label = labels[0] if labels else "Unknown"
+            nodes[value.element_id] = GraphNode(
+                id=value.element_id,
+                node_id=node_id,
+                label=label,
+                properties=properties,
+            )
+        return
+
+    # Handle Neo4j Relationship
+    if hasattr(value, 'element_id') and hasattr(value, 'type'):
+        if value.element_id not in links:
+            links[value.element_id] = GraphLink(
+                id=value.element_id,
+                source=value.start_node.element_id if value.start_node else "",
+                target=value.end_node.element_id if value.end_node else "",
+                type=value.type,
+                properties=dict(value) if hasattr(value, 'items') else {},
+            )
+            # Also extract start and end nodes
+            if value.start_node:
+                _extract_graph_elements(value.start_node, nodes, links)
+            if value.end_node:
+                _extract_graph_elements(value.end_node, nodes, links)
+        return
+
+    # Handle Neo4j Path
+    if hasattr(value, 'nodes') and hasattr(value, 'relationships'):
+        for node in value.nodes:
+            _extract_graph_elements(node, nodes, links)
+        for rel in value.relationships:
+            _extract_graph_elements(rel, nodes, links)
+        return
+
+    # Handle lists
+    if isinstance(value, list):
+        for item in value:
+            _extract_graph_elements(item, nodes, links)
+        return
+
+    # Handle dicts
+    if isinstance(value, dict):
+        for v in value.values():
+            _extract_graph_elements(v, nodes, links)
+        return
+
+
+def _find_connected_components(
+    nodes: dict[str, GraphNode],
+    links: dict[str, GraphLink]
+) -> list[SubgraphResponse]:
+    """Find connected components in the graph using Union-Find algorithm.
+
+    Args:
+        nodes: Dictionary of nodes keyed by element_id.
+        links: Dictionary of links keyed by element_id.
+
+    Returns:
+        List of SubgraphResponse, each representing a connected component.
+    """
+    if not nodes:
+        return []
+
+    # Union-Find data structure
+    parent: dict[str, str] = {node_id: node_id for node_id in nodes}
+
+    def find(x: str) -> str:
+        if parent[x] != x:
+            parent[x] = find(parent[x])  # Path compression
+        return parent[x]
+
+    def union(x: str, y: str) -> None:
+        px, py = find(x), find(y)
+        if px != py:
+            parent[px] = py
+
+    # Build connections from links
+    for link in links.values():
+        source, target = link.source, link.target
+        # Only union if both endpoints exist in our nodes
+        if source in nodes and target in nodes:
+            union(source, target)
+
+    # Group nodes by their root
+    components: dict[str, list[str]] = defaultdict(list)
+    for node_id in nodes:
+        root = find(node_id)
+        components[root].append(node_id)
+
+    # Build SubgraphResponse for each component
+    result: list[SubgraphResponse] = []
+    for component_node_ids in components.values():
+        component_nodes = [nodes[nid] for nid in component_node_ids]
+        component_node_set = set(component_node_ids)
+
+        # Find links where both endpoints are in this component
+        component_links = [
+            link for link in links.values()
+            if link.source in component_node_set and link.target in component_node_set
+        ]
+
+        result.append(SubgraphResponse(
+            nodes=component_nodes,
+            links=component_links,
+        ))
+
+    # Sort by component size (largest first)
+    result.sort(key=lambda c: len(c.nodes), reverse=True)
+
+    return result
+
+
 @router.post(
     "/execute",
-    response_model=CypherResponse,
+    response_model=ConnectedComponentsResponse,
     summary="Execute a Cypher query",
-    description="Execute an arbitrary Cypher query asynchronously and return raw results. Requires authentication.",
+    description="Execute an arbitrary Cypher query and return results as connected components. Requires authentication.",
 )
 async def execute_cypher(
     request: CypherRequest,
     current_user: Annotated[User, Depends(get_current_active_user)],
-) -> CypherResponse:
+) -> ConnectedComponentsResponse:
     """Execute an arbitrary Cypher query.
 
     Args:
@@ -114,7 +246,7 @@ async def execute_cypher(
         current_user: The authenticated user (injected by dependency).
 
     Returns:
-        CypherResponse with raw query results.
+        ConnectedComponentsResponse with nodes and links grouped by connected components.
 
     Raises:
         HTTPException: If query execution fails.
@@ -145,15 +277,24 @@ async def execute_cypher(
                 )
 
     try:
+        nodes: dict[str, GraphNode] = {}
+        links: dict[str, GraphLink] = {}
+
         async with get_session() as session:
             result = await session.run(query, request.parameters)
-            keys = list(result.keys())
-            records = [_serialize_record(record) async for record in result]
+            # Extract graph elements from all records
+            async for record in result:
+                for value in record.values():
+                    _extract_graph_elements(value, nodes, links)
 
-        return CypherResponse(
-            results=records,
-            count=len(records),
-            keys=keys,
+        # Find connected components
+        components = _find_connected_components(nodes, links)
+
+        return ConnectedComponentsResponse(
+            components=components,
+            total_nodes=len(nodes),
+            total_links=len(links),
+            component_count=len(components),
         )
 
     except Exception as e:

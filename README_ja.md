@@ -309,14 +309,52 @@ Authorization: Bearer <token>
 ### Cypher API (🔒 認証必須)
 
 #### クエリ実行
+Cypherクエリを実行し、結果を連結成分ごとにグループ化して返します。レスポンスには、独立したサブグラフに分類されたノードとリレーションシップが含まれます。
+
 ```http
 POST /api/v1/cypher/execute
 Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "query": "MATCH (n) RETURN n LIMIT 10",
+  "query": "MATCH (n)-[r]-(m) RETURN n, r, m LIMIT 100",
   "parameters": {}
+}
+```
+
+レスポンス:
+```json
+{
+  "components": [
+    {
+      "nodes": [
+        {
+          "id": "4:abc:1",
+          "node_id": 12345,
+          "label": "entity",
+          "properties": {"name": "Company A"}
+        },
+        {
+          "id": "4:abc:2",
+          "node_id": 12346,
+          "label": "officer",
+          "properties": {"name": "Person B"}
+        }
+      ],
+      "links": [
+        {
+          "id": "5:abc:1",
+          "source": "4:abc:2",
+          "target": "4:abc:1",
+          "type": "役員",
+          "properties": {}
+        }
+      ]
+    }
+  ],
+  "total_nodes": 2,
+  "total_links": 1,
+  "component_count": 1
 }
 ```
 
